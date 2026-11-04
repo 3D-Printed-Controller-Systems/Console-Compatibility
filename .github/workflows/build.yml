@@ -1,0 +1,22 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Arm GNU Toolchain
+        run: sudo apt-get update && sudo apt-get install -y gcc-arm-none-eabi
+      - name: Build, simulate, and package
+        run: python3 build.py
+      - uses: actions/upload-artifact@v7
+        with:
+          name: console-compatibility
+          path: |
+            dist/*.3dpack
+            dist/*-source.zip
+            dist/SHA256SUMS.txt

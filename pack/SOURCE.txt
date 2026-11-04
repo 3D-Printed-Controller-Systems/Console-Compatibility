@@ -1,0 +1,10 @@
+The complete source for this release is available beside the package as:
+
+Console-Compatibility-0.1.5-source.zip
+
+Release page:
+https://github.com/3D-Printed-Controller-Systems/Console-Compatibility/releases/tag/v0.1.5
+
+The source ZIP contains the mod source, modified libxsm3 source, build tools,
+tests, notices, and licenses needed to rebuild and install your own version.
+No private signing key is required.

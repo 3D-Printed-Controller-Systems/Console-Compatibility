@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/3D-Printed-Controller-Systems/3PCS-Programmer-Development/tools/mods/schema/manifest.schema.json",
+  "title": "3DPCS pack manifest",
+  "description": "manifest.json at the root of every pack (a ZIP file with any name ending in .3dpack)",
+  "type": "object",
+  "required": [
+    "format",
+    "format_version",
+    "id",
+    "name",
+    "author",
+    "version",
+    "contents"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "format": {
+      "const": "3dpcs-pack"
+    },
+    "format_version": {
+      "const": 1,
+      "description": "Bumped only when an older app could misread a newer pack"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*\\.[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 64,
+      "description": "<author>.<pack>, lowercase letters, digits and dashes, e.g. yourname.neon-nights. Never changes between versions"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32,
+      "description": "Shown in the app"
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "description": "Semver MAJOR.MINOR.PATCH. Installing a higher version of the same id replaces the old one"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 120,
+      "description": "One short line, no period at the end"
+    },
+    "icon": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*\\.png$",
+      "description": "Path of a square PNG inside the pack, 64 to 256 px, at most 64 KB"
+    },
+    "boards": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(\\*|[a-z0-9_]{1,23})$"
+      },
+      "default": [
+        "*"
+      ],
+      "description": "Module ids the pack is for (polybar, monoboard, hammeron, riffstick, polylink, or a kit's own id). \"*\" = any that can use it"
+    },
+    "firmware": {
+      "type": "string",
+      "pattern": "^(>=|<=|<|>|=|\\^|~)?(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)( (>=|<=|<|>)(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*))?$",
+      "description": "Firmware versions it needs, e.g. \">=0.9.80\" or \">=0.9.80 <1.0.0\". Left out = any"
+    },
+    "min_app": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+      "description": "Oldest app version that can use the pack"
+    },
+    "license": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "SPDX id, e.g. MIT or CC-BY-4.0"
+    },
+    "homepage": {
+      "type": "string",
+      "pattern": "^https://",
+      "maxLength": 200
+    },
+    "contents": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "color_sets": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/jsonPath"
+          },
+          "description": "Color set files (schema/color-set.schema.json), 1 to 5, listed in the order the presets list shows them"
+        },
+        "mods": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "description": "Firmware mods that the app places in the controller's mod area when it flashes",
+          "items": {
+            "type": "object",
+            "required": [
+              "file",
+              "name"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "file": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*\\.pcsmod$",
+                "maxLength": 128,
+                "description": "The built mod (tools/pcsmod.py build)"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 32
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 120
+              },
+              "settings": {
+                "$ref": "#/$defs/jsonPath",
+                "description": "Its settings panel and saved block (schema/mod-settings.schema.json)"
+              },
+              "usb": {
+                "enum": [
+                  "none",
+                  "add",
+                  "replace",
+                  "conditional"
+                ],
+                "default": "none",
+                "description": "Must match the mod's usb_mode"
+              },
+              "usb_name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 38,
+                "description": "Replace mode: the USB product name computers show"
+              },
+              "role": {
+                "enum": [
+                  "any",
+                  "hub",
+                  "node"
+                ],
+                "default": "any",
+                "description": "Linked boards: which board it goes on"
+              },
+              "hardware": {
+                "type": "object",
+                "additionalProperties": false,
+                "description": "What it claims, so the app can warn before installing",
+                "properties": {
+                  "pins": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 29
+                    }
+                  },
+                  "pio_sms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 8
+                  },
+                  "dma": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 8
+                  },
+                  "alarms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2
+                  },
+                  "buses": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "enum": [
+                        "i2c0",
+                        "i2c1",
+                        "spi0",
+                        "spi1",
+                        "uart0",
+                        "uart1"
+                      ]
+                    }
+                  },
+                  "adc": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 3
+                    }
+                  }
+                }
+              },
+              "usb_vid": {
+                "type": "string",
+                "pattern": "^0x[0-9A-Fa-f]{4}$",
+                "description": "Replace mode, your own USB IDs (with usb_pid). Left out = the shared 3DPCS maker project ID"
+              },
+              "usb_pid": {
+                "type": "string",
+                "pattern": "^0x[0-9A-Fa-f]{4}$"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "jsonPath": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*\\.json$",
+      "maxLength": 128,
+      "description": "Relative path inside the pack: letters, digits, _ and -, folders with /, no .. or leading /"
+    }
+  }
+}

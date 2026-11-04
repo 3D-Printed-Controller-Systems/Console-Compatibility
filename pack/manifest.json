@@ -1,0 +1,23 @@
+{
+  "format": "3dpcs-pack",
+  "format_version": 1,
+  "id": "3dpcs.console-compatibility",
+  "name": "Console Compatibility",
+  "author": "3DPCS",
+  "version": "0.1.5",
+  "description": "Adds console compatibility through an open-source mod",
+  "icon": "icon.png",
+  "license": "LGPL-2.1-or-later",
+  "homepage": "https://github.com/3D-Printed-Controller-Systems/Console-Compatibility",
+  "boards": ["*"],
+  "contents": {
+    "mods": [
+      {
+        "file": "mods/console-compatibility.pcsmod",
+        "name": "Console Compatibility",
+        "description": "Provides additional console compatibility framework",
+        "usb": "none"
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+libxsm3
+Copyright (C) 2022-2023 InvoxiPlayGames
+GNU Lesser General Public License version 2.1 or later.
+Upstream commit: a085709cce5fe0da19f4a5213f7b6f325d3aff7a
+
+ExCrypt-derived files
+Copyright (c) 2020 emoose
+BSD 3-Clause license. See LICENSE-EXCRYPT-BSD-3-CLAUSE.txt and the corresponding
+source archive for the exact files.
+
+3DPCS mod API header and build tools
+MIT License. See mod-dev/LICENSE and mod-dev/include/LICENSE.mod-api in the source archive.
+
+Console Compatibility adapter and embedded modifications
+Copyright (C) 2026 3D Printed Controller Systems
+GNU Lesser General Public License version 2.1 or later.
+See MODIFICATIONS.md and NOTICE.md in the corresponding source archive.

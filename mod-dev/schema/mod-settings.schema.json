@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/3D-Printed-Controller-Systems/3PCS-Programmer-Development/tools/mods/schema/mod-settings.schema.json",
+  "title": "3DPCS mod settings",
+  "description": "A mod's settings panel and the layout of its saved block (256 bytes max, little endian). Same format as the app's product settings. pcspack.py also checks offsets, overlaps and defaults, which a JSON Schema can't",
+  "type": "object",
+  "required": [
+    "schema"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schema": {
+      "const": 1
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label",
+          "fields"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]{1,32}$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "section": {
+            "enum": [
+              "main",
+              "advanced"
+            ],
+            "default": "main"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/field"
+            }
+          }
+        }
+      }
+    },
+    "hidden": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/field"
+      },
+      "description": "Saved but not shown"
+    }
+  },
+  "$defs": {
+    "field": {
+      "type": "object",
+      "required": [
+        "id",
+        "label",
+        "type",
+        "offset",
+        "size",
+        "default"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]{1,32}$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "type": {
+          "enum": [
+            "range",
+            "toggle",
+            "select",
+            "number",
+            "color",
+            "text",
+            "hidden"
+          ]
+        },
+        "offset": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "default": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "min": {
+          "type": "integer"
+        },
+        "max": {
+          "type": "integer"
+        },
+        "step": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "unit": {
+          "type": "string",
+          "maxLength": 8
+        },
+        "options": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "required": [
+              "value",
+              "label"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "type": "integer"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              }
+            }
+          }
+        },
+        "visible_if": {
+          "type": "string",
+          "description": "id of a toggle or select field"
+        },
+        "help": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "signed": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
